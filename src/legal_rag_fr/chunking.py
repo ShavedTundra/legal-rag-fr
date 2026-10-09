@@ -6,7 +6,8 @@ def chunk_fixed(words: list[str], size: int, overlap: int) -> list[list[str]]:
         raise ValueError("Overlap must be between 0 and size")
     for start in range(0, len(words), window):
         out.append(words[start: min(start+size, len(words))])
-        if (start+size >= len(words)): break
+        if (start+size >= len(words)): 
+            break
     
     return out            
 

@@ -1,5 +1,6 @@
 import pytest
 from legal_rag_fr.similarity import cosine, semantic_search
+import numpy as np
 
 @pytest.mark.parametrize("u,v, expected", [
     ([1, 2, 2], [2, 4, 4], 1.0),
@@ -34,7 +35,6 @@ def test_sem_sanction():
     assert ranking == [0, 3, 2, 1, 4]
     assert sem_res[4] == pytest.approx(0.0)
 
-import numpy as np
 def test_numpy_faceoff():
     rng = np.random.default_rng(42)
     docs = rng.random((50,50))

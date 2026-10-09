@@ -71,15 +71,19 @@ QUERIES = [
        "le créancier",                                                                                                                                
    ]
 
+def top5(scores : list[float]):
+    return sorted(range(len(CORPUS)), key= lambda i: (-scores[i], i))[:5]
+    
+
 def test_matches_rank_bm25():
     tokenized = [tokenize(doc) for doc in CORPUS]
     ref = BM25Okapi(tokenized, k1=1.5, b=0.75)
     mine = BM25(CORPUS, k1=1.5, b=0.75)
-
+    
     for q in QUERIES:
         ref_scores = ref.get_scores(tokenize(q))
         my_scores = mine.get_scores(q)
-        top5 = lambda scores : sorted(range(len(CORPUS)), key= lambda i: (-scores[i], i))[:5]
+    
         assert top5(my_scores) == top5(ref_scores), q
         for i in top5(ref_scores):
             assert abs(my_scores[i] - ref_scores[i]) / max(abs(ref_scores[i]), 1e-9) < 0.01, (q, i)

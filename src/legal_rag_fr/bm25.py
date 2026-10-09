@@ -6,7 +6,7 @@ import statistics
 TOKEN_RE = re.compile(r"[a-zàâäéèêëîïôöùûüç']+")
 
 def tokenize(text: str) -> list[str]:
-    if not type(text) is str:
+    if not isinstance(text, str):
         raise TypeError("Input a string")
     lower_cased = text.lower()
 

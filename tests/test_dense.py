@@ -14,8 +14,9 @@ Valeurs de contrôle vérifiées au modèle réel le 2026-09-23 :
 
 import numpy as np
 import pytest
+pytest.importorskip("sentence_transformers")
 
-from legal_rag_fr.dense import DenseIndex
+from legal_rag_fr.dense import DenseIndex  # noqa: E402
 
 CORPUS = [
     "Le contrat de travail est suspendu pendant la maladie.",            # 0
