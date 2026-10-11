@@ -1,4 +1,3 @@
-
 def rrf(ranks: list[list[int]], k: int=60) -> dict[str, float]:
     res = dict()
     for rank in ranks:
