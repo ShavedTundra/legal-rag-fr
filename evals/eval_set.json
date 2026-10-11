@@ -1,0 +1,25 @@
+{
+"corpus": [ "Le contrat est un accord de volontés entre plusieurs parties destiné à créer des obligations légales.",                                                      
+            "Le contrat oblige les parties à exécuter leurs engagements tels qu'ils ont été convenus.",                                                                   
+            "Le contrat est formé par la rencontre d'une offre et de l'acceptation de cette offre.",                                                                      
+            "Le consentement doit être libre et éclairé; le dol, l'erreur et la violence vicient le contrat.",                                                            
+            "La violence physique ou morale entraine la nullité du contrat lorsqu'elle détermine le consentement.",                                                       
+            "Le contrat ne peut nuire à des tiers; il ne produit d'effet qu'entre les parties contractantes.",                                                            
+            "Les contrats sont synallagmatiques lorsque les parties s'obligent réciproquement les unes envers les autres.",                                               
+            "Le contrat à titre gratuit est celui qui procure un avantage à une partie sans rien exiger en retour.",                                                      
+            "La bonne foi doit gouverner l'exécution du contrat comme sa formation.",                                                                                     
+            "En cas d'inexécution, le créancier peut demander l'exécution forcée ou la résolution du contrat.",                                                           
+            "Le présent contrat a pour objet de définir la nature et le volume des prestations de transport que l'opérateur de transport confie de façon régulière et significative au sous-traitant",
+            "et de fixer les conditions dans lesquelles ces opérations sont exécutées.", 
+            "L'opérateur de transport informe le sous-traitant des changements dans la nature des marchandises transportées quand celles-ci font l'objet d'une réglementation particulière.",
+            "Le chiffre d'affaires minimum sur lequel l'opérateur de transport s'engage envers le sous-traitant s'élève à EUR." ],
+    
+    "queries": [
+        {"query": "nullité du consentement", "relevant": [4, 3]},
+        {"query": "exécution forcée du contrat", "relevant": [9, 1, 8]},
+        {"query": "contrat gratuit", "relevant": [7]},
+        {"query": "effets à l'égard des tiers", "relevant": [5]},
+        {"query": "chiffre d'affaires", "relevant": [13]},
+        {"query": "le créancier", "relevant": [9]}
+    ]
+}
