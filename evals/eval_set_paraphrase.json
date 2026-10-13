@@ -1,0 +1,13 @@
+{
+  "_note": "Requêtes paraphrasées — sans ancrage lexical dans l'article cible. Corpus : evals/legifrance_sample.json (les ids référencent 'documents[].id'). But : démontrer le miss BM25 et l'apport du dense + hybride.",
+  "queries": [
+    {"query": "quels sont les pouvoirs reconnus au maître d'un bien", "relevant": ["cc-544"]},
+    {"query": "critère de l'imprévisibilité et de l'irrésistibilité du trouble", "relevant": ["cc-1218"]},
+    {"query": "une prérogative abandonnée finit-elle par disparaître", "relevant": ["cc-2219", "cc-2224"]},
+    {"query": "comment confier un pouvoir d'agir à autrui", "relevant": ["cc-1984"]},
+    {"query": "céder un bien contre une somme d'argent", "relevant": ["cc-1582"]},
+    {"query": "publicité par sms sans accord préalable", "relevant": ["co-L223-8"]},
+    {"query": "trouver un arrangement amiable gratuit sans tribunal après un achat", "relevant": ["co-L612-1", "co-L611-1"]},
+    {"query": "peut-on repousser l'échéance d'une condamnation à payer", "relevant": ["pc-510", "pc-513"]}
+  ]
+}

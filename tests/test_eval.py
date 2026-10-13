@@ -1,5 +1,5 @@
 import pytest
-from legal_rag_fr.eval import recall_at_k, mrr
+from legal_rag_fr.eval import recall_at_k, mrr, ndcg_at_k
 
 @pytest.mark.parametrize("ranked, relevant, k, recall_at_k_expected", [
     ([1, 2, 2], {2}, 3, 1.0),
@@ -27,3 +27,17 @@ def test_eval_nul_set():
 def test_mrr_nul_set():
       with pytest.raises(ValueError):
             mrr([1,2], {})
+
+def test_ndcg_at_k_basics():
+     assert ndcg_at_k(['a', 'b', 'x'], {'a', 'b'}, k=3) == 1.0
+     assert ndcg_at_k(['c', 'a'], {'a'}, k=5) == pytest.approx(0.6309, rel=1e-4)
+     assert ndcg_at_k(['a', 'c', 'a'], {'a'}, k=3) == 1.0
+     assert ndcg_at_k(['x', 'a', 'b'], {'a', 'b'}, k=3) == pytest.approx(0.6934, rel=1e-4)
+     assert ndcg_at_k([], {'b'}, k=3) == 0.0
+     assert ndcg_at_k(['a'], {}, k=3) == 0.0
+     assert ndcg_at_k(['c','d','a'], {'a'}, k=2) == 0.0
+
+def test_ndcg_monotone():
+     assert ndcg_at_k(['h', 'e', 'd', 'a', 'b', 'x'], {'a', 'b'}, k=3) < ndcg_at_k(['h', 'e', 'a', 'b', 'x', 'd'], {'a', 'b'}, k=3)
+     assert ndcg_at_k(['d', 'a', 'b', 'x'], {'a', 'b'}, k=3) < ndcg_at_k(['a', 'b', 'x', 'd'], {'a', 'b'}, k=3)
+          

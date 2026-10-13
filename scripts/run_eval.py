@@ -5,6 +5,7 @@ from statistics import fmean, mean
 from legal_rag_fr.bm25 import BM25
 from legal_rag_fr.rrf import rrf
 from legal_rag_fr.eval import recall_at_k, mrr
+from legal_rag_fr.rerank import Reranker
 
 try:
     from legal_rag_fr.dense import DenseIndex
@@ -13,11 +14,15 @@ except ImportError:
     DENSE_OK = False
 
 K = 5
-DATA = Path(__file__).resolve().parents[1] / "evals" / "eval_set.json"
+EVALS = Path(__file__).resolve().parents[1] / "evals"
 
-with open('evals/eval_set.json') as f:
-    data = json.load(f)
+with open(EVALS / 'legifrance_sample.json') as f:
+    legifrance = json.load(f)
 
+legifrance_docs = legifrance["documents"]
+
+with open(EVALS / 'eval_set_paraphrase.json') as f:
+    eval_set = json.load(f)
 
 def top_k(scores, k=K):
     return sorted(range(len(scores)), key= lambda i: (-scores[i], i))[:k]
@@ -44,9 +49,22 @@ def make_rrf(bm_rank, dense_rank):
         return [int(i) for i, _ in sorted(fused.items(), key=lambda x: -x[1])][:K]
     return rank
 
+def make_rrf_rerank(corpus, bm_rank, dense_rank, n_candidates=10, k=5):
+    rr = Reranker()
+    def rank(query):
+        fused = rrf([bm_rank(query), dense_rank(query)], k=60)
+        top = sorted(fused.items(), key=lambda x: -x[1])[:n_candidates]
+        cand_idx = [int(i) for i,_ in top]
+        cand = [corpus[i] for i in cand_idx]
+        return [cand_idx[i] for i, _ in rr.rerank(query, cand, top_k=k)]
+    return rank
 
-corpus = data["corpus"]
-queries = data["queries"]
+ids = [d["id"] for d in legifrance_docs]
+queries = [
+    {"query": q["query"], "relevant": [ids.index(r) for r in q["relevant"]]}
+    for q in eval_set["queries"]
+]
+corpus = [d["text"] for d in legifrance_docs]
 bm_rank = make_bm25(corpus)
 rankers = {"BM25": bm_rank}
 
@@ -57,6 +75,7 @@ if DENSE_OK:
 
     rankers["Dense"] = dense_rank
     rankers["RRF"] = make_rrf(bm_rank, dense_rank)
+    rankers["Rerank"] = make_rrf_rerank(corpus, bm_rank, dense_rank)
 else:
     print("sentence-transformers absent - BM25 seulement (uv sync --extra dense)")
 
