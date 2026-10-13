@@ -13,7 +13,8 @@ try:
 except ImportError:
     DENSE_OK = False
 
-K = 5
+K = 5                                                                                                                    
+RETRIEVAL_K = 10       # depth fed into RRF
 EVALS = Path(__file__).resolve().parents[1] / "evals"
 
 with open(EVALS / 'legifrance_sample.json') as f:
@@ -24,7 +25,7 @@ legifrance_docs = legifrance["documents"]
 with open(EVALS / 'eval_set_paraphrase.json') as f:
     eval_set = json.load(f)
 
-def top_k(scores, k=K):
+def top_k(scores, k=RETRIEVAL_K):
     return sorted(range(len(scores)), key= lambda i: (-scores[i], i))[:k]
 
 def make_bm25(corpus) -> list[float]:
@@ -39,7 +40,7 @@ def make_dense(corpus):
     idx = DenseIndex()
     idx.fit(corpus)
     def rank(query):
-        res = idx.search(query, k=K)
+        res = idx.search(query, k=RETRIEVAL_K)
         return [int(i) for i,_ in res]
     return rank
 
@@ -49,7 +50,7 @@ def make_rrf(bm_rank, dense_rank):
         return [int(i) for i, _ in sorted(fused.items(), key=lambda x: -x[1])][:K]
     return rank
 
-def make_rrf_rerank(corpus, bm_rank, dense_rank, n_candidates=10, k=5):
+def make_rrf_rerank(corpus, bm_rank, dense_rank, n_candidates=20, k=5):
     rr = Reranker()
     def rank(query):
         fused = rrf([bm_rank(query), dense_rank(query)], k=60)
@@ -100,5 +101,5 @@ for name, rank in rankers.items():
         print(f"  {q["query"]:<28} top5={ranked}  "
               f"recall={recalls[-1]:.2f} rr={rrs[-1]:.2f}")
 
-    print(f"{name: <5} recall@5={fmean(recalls):.3f}  "
+    print(f"{name: <5} recall@{K}={fmean(recalls):.3f}  "
           f"MRR={fmean(rrs):.3f}  {fmean(times)*1000:.2f} ms/query")
