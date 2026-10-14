@@ -1,4 +1,5 @@
-import json, time
+import json
+import time
 from pathlib import Path
 from statistics import fmean, mean
 

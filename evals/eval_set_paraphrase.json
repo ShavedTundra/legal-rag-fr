@@ -1,13 +1,219 @@
 {
-  "_note": "Requêtes paraphrasées — sans ancrage lexical dans l'article cible. Corpus : evals/legifrance_sample.json (les ids référencent 'documents[].id'). But : démontrer le miss BM25 et l'apport du dense + hybride.",
-  "queries": [
-    {"query": "quels sont les pouvoirs reconnus au maître d'un bien", "relevant": ["cc-544"]},
-    {"query": "critère de l'imprévisibilité et de l'irrésistibilité du trouble", "relevant": ["cc-1218"]},
-    {"query": "une prérogative abandonnée finit-elle par disparaître", "relevant": ["cc-2219", "cc-2224"]},
-    {"query": "comment confier un pouvoir d'agir à autrui", "relevant": ["cc-1984"]},
-    {"query": "céder un bien contre une somme d'argent", "relevant": ["cc-1582"]},
-    {"query": "publicité par sms sans accord préalable", "relevant": ["co-L223-8"]},
-    {"query": "trouver un arrangement amiable gratuit sans tribunal après un achat", "relevant": ["co-L612-1", "co-L611-1"]},
-    {"query": "peut-on repousser l'échéance d'une condamnation à payer", "relevant": ["pc-510", "pc-513"]}
-  ]
+ "_note": "Requêtes paraphrasées — sans ancrage lexical dans l'article cible (validé par contrôle automatique de recouvrement lexical, v2 : 8 + 27 requêtes, corpus v0.3 = 59 docs, dont ~30 distracteurs sans requête). But : démontrer le miss BM25 et l'apport du dense + hybride.",
+ "queries": [
+  {
+   "query": "quels sont les pouvoirs reconnus au maître d'un bien",
+   "relevant": [
+    "cc-544"
+   ]
+  },
+  {
+   "query": "critère de l'imprévisibilité et de l'irrésistibilité du trouble",
+   "relevant": [
+    "cc-1218"
+   ]
+  },
+  {
+   "query": "une prérogative abandonnée finit-elle par disparaître",
+   "relevant": [
+    "cc-2219",
+    "cc-2224"
+   ]
+  },
+  {
+   "query": "comment confier un pouvoir d'agir à autrui",
+   "relevant": [
+    "cc-1984"
+   ]
+  },
+  {
+   "query": "céder un bien contre une somme d'argent",
+   "relevant": [
+    "cc-1582"
+   ]
+  },
+  {
+   "query": "publicité par sms sans accord préalable",
+   "relevant": [
+    "co-L223-8"
+   ]
+  },
+  {
+   "query": "trouver un arrangement amiable gratuit sans tribunal après un achat",
+   "relevant": [
+    "co-L612-1",
+    "co-L611-1"
+   ]
+  },
+  {
+   "query": "peut-on repousser l'échéance d'une condamnation à payer",
+   "relevant": [
+    "pc-510",
+    "pc-513"
+   ]
+  },
+  {
+   "query": "comment nomme-t-on un engagement où chacun estime donner et recevoir autant",
+   "relevant": [
+    "cc-1108"
+   ]
+  },
+  {
+   "query": "quand les conditions d'un pacte sont prédéfinies et ne se discutent pas",
+   "relevant": [
+    "cc-1110"
+   ]
+  },
+  {
+   "query": "promesse de s'adresser en premier à la personne désignée",
+   "relevant": [
+    "cc-1123"
+   ]
+  },
+  {
+   "query": "qui décide de la somme à régler pour un travail accompli sans entente au préalable",
+   "relevant": [
+    "cc-1165"
+   ]
+  },
+  {
+   "query": "un document signé numériquement doit-il offrir les mêmes garanties de lecture qu'un support classique",
+   "relevant": [
+    "cc-1176"
+   ]
+  },
+  {
+   "query": "peut-on modifier un accord conclu sans l'assentiment des deux",
+   "relevant": [
+    "cc-1193"
+   ]
+  },
+  {
+   "query": "que faire si un bouleversement hors de toute prévision alourdit démesurément la charge d'un contractant",
+   "relevant": [
+    "cc-1195"
+   ]
+  },
+  {
+   "query": "comment mettre fin à un pacte quand l'autre bafoue ses obligations de façon sérieuse",
+   "relevant": [
+    "cc-1224"
+   ]
+  },
+  {
+   "query": "récupérer ce qui a été versé par erreur alors qu'on ne le devait pas",
+   "relevant": [
+    "cc-1302"
+   ]
+  },
+  {
+   "query": "un début de trace écrite peut-il ouvrir la voie à une démonstration judiciaire",
+   "relevant": [
+    "cc-1362"
+   ]
+  },
+  {
+   "query": "celui qui a délégué peut-il reprendre sa délégation à tout moment",
+   "relevant": [
+    "cc-2004"
+   ]
+  },
+  {
+   "query": "par quels biais la maîtrise d'un patrimoine s'obtient-elle",
+   "relevant": [
+    "cc-711"
+   ]
+  },
+  {
+   "query": "ce qu'il faut dire à l'acheteur avant qu'un achat payant ne se conclue",
+   "relevant": [
+    "co-L111-1"
+   ]
+  },
+  {
+   "query": "comment le tarif doit-il être porté à la connaissance de l'acheteur en magasin",
+   "relevant": [
+    "co-L112-1"
+   ]
+  },
+  {
+   "query": "stipulations manifestement injustes interdites face aux particuliers",
+   "relevant": [
+    "co-L212-1",
+    "co-L212-2"
+   ]
+  },
+  {
+   "query": "jouer sur la crédulité pour convaincre d'acheter",
+   "relevant": [
+    "co-L121-2"
+   ]
+  },
+  {
+   "query": "celui qui accorde des fonds à un crédit porte quel nom officiel",
+   "relevant": [
+    "co-L311-1"
+   ]
+  },
+  {
+   "query": "renoncer à son recours vaut-il acceptation du verdict contesté",
+   "relevant": [
+    "pc-403"
+   ]
+  },
+  {
+   "query": "à partir de quel moment le temps imparti pour contester une décision est-il décompté",
+   "relevant": [
+    "pc-528"
+   ]
+  },
+  {
+   "query": "peut-on être condamné pour un fait commis par un tiers",
+   "relevant": [
+    "cpen-121-1"
+   ]
+  },
+  {
+   "query": "santé mentale fragilisée chez l'auteur de l'acte incriminé",
+   "relevant": [
+    "cpen-122-1"
+   ]
+  },
+  {
+   "query": "riposter immédiatement à une attaque non justifiée",
+   "relevant": [
+    "cpen-122-5"
+   ]
+  },
+  {
+   "query": "franchir l'interdit pour écarter un péril menaçant",
+   "relevant": [
+    "cpen-122-7"
+   ]
+  },
+  {
+   "query": "catalogue des sanctions les plus graves pour une personne physique",
+   "relevant": [
+    "cpen-131-1"
+   ]
+  },
+  {
+   "query": "retour à l'infraction après un verdict irrévocable",
+   "relevant": [
+    "cpen-132-8"
+   ]
+  },
+  {
+   "query": "prendre subrepticement ce qui appartient à un tiers",
+   "relevant": [
+    "cpen-311-1"
+   ]
+  },
+  {
+   "query": "enregistrer des propos ou des images à l'insu des personnes",
+   "relevant": [
+    "cpen-226-1"
+   ]
+  }
+ ]
 }

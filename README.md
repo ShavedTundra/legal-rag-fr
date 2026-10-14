@@ -5,6 +5,8 @@ Lexical (BM25 from scratch) + dense (SentenceTransformers) + fusion RRF + rerank
 
 MIT — voir [LICENSE](LICENSE).
 
+[![CI](https://github.com/ShavedTundra/legal-rag-fr/actions/workflows/ci.yml/badge.svg)](https://github.com/ShavedTundra/legal-rag-fr/actions/workflows/ci.yml)
+
 ## Dev
 
 ```bash
@@ -30,9 +32,9 @@ uv run python scripts/run_eval.py  # benchmark BM25 vs Dense vs RRF vs Rerank
 
 ## Méthodologie
 
-**Corpus** : 23 articles Légifrance (`evals/legifrance_sample.json`) — 13 Code civil, 5 Code de la consommation, 5 Code de procédure civile — identifiants type `cc-544`.
+**Corpus** : 59 articles Légifrance (`evals/legifrance_sample.json`) — 28 Code civil, 13 Code de la consommation, 10 Code de procédure civile, 8 Code pénal — identifiants type `cc-544`. ~24 articles sans requête associée servent de distracteurs.
 
-**Requêtes** : 8 requêtes paraphrasées (`evals/eval_set_paraphrase.json`) : formulation naturelle, vocabulaire distinct du texte cible, donc sans ancrage lexical direct. Chaque requête pointe 1–2 articles pertinents (11 paires au total). Un jeu légué à ancrage lexical (`evals/eval_set.json`, 6 requêtes, corpus de 14 docs) est conservé pour référence.
+**Requêtes** : 35 requêtes paraphrasées (`evals/eval_set_paraphrase.json`) : formulation naturelle, vocabulaire distinct du texte cible — l'absence d'ancrage lexical est vérifiée par un contrôle automatique de recouvrement de tokens (accents neutralisés, mots outils exclus). Chaque requête pointe 1–2 articles pertinents (39 paires au total). Un jeu légué à ancrage lexical (`evals/eval_set.json`, 6 requêtes, corpus de 14 docs) est conservé pour référence.
 
 **Pipeline évalué** :
 1. BM25 et dense (MiniLM multilingue, 384 d) classent chacun le corpus, profondeur 10 (`RETRIEVAL_K`).
@@ -45,25 +47,14 @@ uv run python scripts/run_eval.py  # benchmark BM25 vs Dense vs RRF vs Rerank
 
 | Config | recall@5 | MRR | Latence (ms/requête) |
 |---|---|---|---|
-| BM25 | 0.438 | 0.260 | 0.03 |
-| Dense (MiniLM) | 0.812 | 0.708 | 7.4 |
-| Hybride (RRF) | 0.812 | 0.463 | 6.2 |
-| RRF + Rerank (bge-v2-m3) | 1.000 | 0.938 | ≈900 |
+| BM25 | 0.157 | 0.136 | 0.1 |
+| Dense (MiniLM) | 0.671 | 0.493 | 6.3 |
+| Hybride (RRF) | 0.500 | 0.277 | 6.2 |
+| RRF + Rerank (bge-v2-m3) | 0.814 | 0.776 | ≈1000 |
 
 Chargement des modèles + encodage du corpus : quelques secondes, une fois, hors latence par requête.
 La fusion RRF ajoute un coût négligeable (< 1 ms) sur le dense seul ; le rerank domine la latence (~0,9 s/requête, 20 candidats sur CPU).
 
-**Lecture** : sans ancrage lexical, BM25 s'effondre (0.438) — le dense porte le rappel
-seul. La fusion RRF conserve le recall du dense mais dégrade le MRR (les candidats
-croisés des deux branches repositionnent des distracteurs au-dessus du premier
-pertinent). Le reranking cross-encoder rescore les candidats indépendamment et replace
-l'article pertinent en tête sur 7 requêtes sur 8 (MRR 0.938), rappel parfait. Les deux
-requêtes à double annotation (« prérogative abandonnée », « repousser l'échéance »)
-n'atteignent le reranker que grâce à la profondeur de retrieval 10 et à la fenêtre de
-20 candidats — à profondeur 5, leurs seconds articles restent hors pool.
+**Lecture** : sans ancrage lexical, BM25 s'effondre (0.157 — 20 articles pertinents sur 39 hors top-5). Le dense porte le rappel seul. **Nouveau constat v0.3 : la fusion RRF dégrade ici le dense** (recall 0.500 < 0.671) — fusionner un classement lexical pauvre avec un bon classement dense injecte des distracteurs ; la fusion n'est rentable que si les deux branches sont à peu près comparables. Le reranking cross-encoder rescore les candidats indépendamment : +0.14 recall et MRR 0.493 → 0.776 vs dense seul, article pertinent en tête sur 25 requêtes sur 35. 5 requêtes restent ratées au rerank (ex. définitions très courtes comme le vol, ou paraphrases abstraites « maîtrise d'un patrimoine ») — le pool de 20 candidats ne contient pas toujours l'article pertinent.
 
-**Limites** (honnêteté de micro-benchmark) : 23 documents et 8 requêtes ne mesurent pas
-la généralisation. `RETRIEVAL_K = 10` et `n_candidates = 20` ont été réglés sur CE jeu
-(choisis à partir de ses deux misses exacts) : le recall 1.000 est donc optimiste, à
-re-valider sur un jeu élargi (20–30 requêtes) avant tout autre réglage. Latence rerank
-CPU incompatible interactif sans quantification (int8/ONNX).
+**Limites** (honnêteté de micro-benchmark) : 59 documents et 35 requêtes mesurent mieux la généralisation que la v0.2 (23/8) mais restent un micro-benchmark. `RETRIEVAL_K = 10` et `n_candidates = 20` ont été réglés sur le jeu v0.2 (8 requêtes) et NON re-réglés sur la v0.3 — les 5 misses du rerank sont donc partiellement un artefact de ces réglages hérités ; prochaine étape : re-régler sur v0.3 puis re-valider sur un jeu élargi. Latence rerank CPU incompatible interactif sans quantification (int8/ONNX).
